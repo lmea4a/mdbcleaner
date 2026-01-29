@@ -82,11 +82,11 @@ if __name__ == "__main__":
     dry_run = os.environ.get("DRY_RUN", "1").lower() in ("1", "true", "yes", "y")
     days = int(os.environ.get("RETENTION_DAYS", "30"))
     uri = os.environ.get("MONGO_URI", "mongodb://mongodb:27017/?directConnection=true")
-    #raise SystemExit(delete_outdated(dry_run, uri, days))
-    with MongoClient(uri) as client:
-        db = client["openflow"]
-        for chunk in db["fs.chunks"].find():
-            print(chunk)
+    raise SystemExit(delete_outdated(dry_run, uri, days))
+    #with MongoClient(uri) as client:
+    #    db = client["openflow"]
+    #    for chunk in db["fs.chunks"].find():
+    #        print(chunk)
     #    print(file_data)
     #    id_ = file_data["_id"]
     #    print(db["fs.chunks"].find({"files_id": id_})[0])
