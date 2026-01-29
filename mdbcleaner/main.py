@@ -22,7 +22,7 @@ to_clean: dict[str, str] = {
             "users_hist": "_created",
             "openrpa_hist": "_created",
             "nodered_hist": "_created",
-            "fs.files": "_created"
+            "fs.files": "uploadDate"
         }
 
 def delete_outdated(dry_run: bool = True, uri: str = "mongodb://mongodb:27017/?directConnection=true",  cutoff: int = 205) -> int:
@@ -61,7 +61,7 @@ def delete_outdated(dry_run: bool = True, uri: str = "mongodb://mongodb:27017/?d
                             logger.warning(f"Nothing found for file id {file_meta_data['_id']}. Skipping...")
                             continue
 
-                        db["fs.chunks"].delete_one(file_chunks_query)
+                        db["fs.chunks"].delete_many(file_chunks_query)
 
                     
                 res = db[collection_.name].delete_many(query)
@@ -82,9 +82,11 @@ if __name__ == "__main__":
     dry_run = os.environ.get("DRY_RUN", "1").lower() in ("1", "true", "yes", "y")
     days = int(os.environ.get("RETENTION_DAYS", "30"))
     uri = os.environ.get("MONGO_URI", "mongodb://mongodb:27017/?directConnection=true")
-    raise SystemExit(delete_outdated(dry_run, uri, days))
-   # with MongoClient(uri) as client:
-   #     db = client["openflow"]
-   #     file_data = db["fs.files"].find_one()
-   #     id_ = file_data["_id"]
-   #     print(db["fs.chunks"].find({"files_id": id_})[0])
+    #raise SystemExit(delete_outdated(dry_run, uri, days))
+    with MongoClient(uri) as client:
+        db = client["openflow"]
+        for chunk in db["fs.chunks"].find():
+            print(chunk)
+    #    print(file_data)
+    #    id_ = file_data["_id"]
+    #    print(db["fs.chunks"].find({"files_id": id_})[0])
