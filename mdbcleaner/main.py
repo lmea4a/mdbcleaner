@@ -7,7 +7,7 @@ import time
 import logging
 
 #root logger
-logger = logging.getLogger()
+logger = logging.getLogger(level=logging.INFO)
 
 to_clean: dict[str, str] = {
             "audit": "_created",
